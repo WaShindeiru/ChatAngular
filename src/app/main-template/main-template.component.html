@@ -1,0 +1,30 @@
+<div class="flex-container main">
+  <div class="left-pane padding">
+    <div class="chat-windows-container">
+
+      <app-conversation
+        *ngFor = "let conversation of conversations; let i = index;"
+        [conversationName]="conversation.conversationName"
+        [id] = "conversation.id"
+        (idEmitter) = "showId($event)"
+      ></app-conversation>
+
+    </div>
+  </div>
+
+  <div class="right-pane">
+<!--    <div class="flex-container-center chat-div">-->
+
+<!--      <div class="message-div"-->
+<!--           *ngFor = "let message of messages; let i = index;">-->
+<!--        <app-message [message]="message"></app-message>-->
+<!--      </div>-->
+
+<!--      <div class="flex-container ">-->
+<!--        <input type="text" class="message-input-div ">-->
+<!--        <button type="button" class="btn btn-primary">Send</button>-->
+<!--      </div>-->
+<!--    </div>-->
+    <router-outlet></router-outlet>
+  </div>
+</div>

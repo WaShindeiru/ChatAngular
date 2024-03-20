@@ -1,0 +1,50 @@
+body {
+  height: 100%;
+}
+
+.main {
+  background-color: lightblue;
+  width: 100%;
+  height: 100%;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction:  row;
+}
+
+.flex-container-center {
+  display: flex;
+  flex-direction:  row;
+  justify-content: center;
+}
+
+.left-pane {
+  flex: 2.6;
+  background-color: #c0dade;
+}
+
+.right-pane {
+  flex: 7.4;
+  background-color: #a3bcc7;
+}
+
+.padding {
+  padding: 10px;
+}
+
+.chat-windows-container {
+  margin: 5px;
+}
+
+/*.messages {*/
+/*  display: flex;*/
+/*  align-items: end;*/
+/*  justify-content: center;*/
+/*  overflow: scroll;*/
+/*}*/
+
+.message-input {
+  height: 40px;
+  width: 100%;
+}
