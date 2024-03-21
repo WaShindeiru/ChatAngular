@@ -23,7 +23,7 @@ export class HttpService {
     return this.http.get<Array<Conversation>>(requestUrl, {headers});
   }
 
-  public getMessages(conversationId: number) {
+  public getMessages(conversationId: string) {
     let headers = new HttpHeaders( {
       Authorization: "Bearer " + this.authentication.token
     });

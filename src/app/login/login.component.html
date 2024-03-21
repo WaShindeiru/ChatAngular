@@ -1,0 +1,21 @@
+<div class="main-container">
+  <div class="flex-center-container">
+    <form [formGroup]="signupForm" (ngSubmit)="showUsername()">
+      <div class="login-container">
+        <label class="form-label" for="username">Username</label>
+        <input
+          type="text"
+          class="form-input"
+          id="username"
+          formControlName='username'>
+        <label class="form-label" for="password">Password</label>
+        <input
+          type="text"
+          class="form-input"
+          id="password"
+          formControlName='password'>
+        <button type="submit">Login</button>
+      </div>
+    </form>
+  </div>
+</div>

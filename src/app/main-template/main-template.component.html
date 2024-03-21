@@ -6,7 +6,7 @@
         *ngFor = "let conversation of conversations; let i = index;"
         [conversationName]="conversation.conversationName"
         [id] = "conversation.id"
-        (idEmitter) = "showId($event)"
+        (idEmitter) = "changeConversation($event)"
       ></app-conversation>
 
     </div>

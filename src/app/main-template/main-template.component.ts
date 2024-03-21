@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "../authentication/authentication.service";
 import {ConversationComponent} from "../conversation/conversation.component";
 import {HttpService} from "../http/http.service";
@@ -6,7 +6,7 @@ import {Conversation} from "../http/Conversation";
 import {ChatMessage} from "../http/ChatMessage";
 import {NgForOf} from "@angular/common";
 import {MessageComponent} from "../message/message.component";
-import {RouterOutlet} from "@angular/router";
+import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
 
 @Component({
   selector: 'app-main-template',
@@ -20,18 +20,23 @@ import {RouterOutlet} from "@angular/router";
   templateUrl: './main-template.component.html',
   styleUrl: './main-template.component.css'
 })
-export class MainTemplateComponent {
+export class MainTemplateComponent implements OnInit {
 
   private _conversations : Array<Conversation>;
 
-  constructor(private authenticationService: AuthenticationService, private httpService: HttpService) {
-    this.initialize();
-  }
+  constructor(private authenticationService: AuthenticationService, private httpService: HttpService,
+              private router: Router, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+      this.initialize();
+    }
 
   private async initialize() {
-    this.authenticationService.username = "Fvlte";
-    this.authenticationService.password = "123";
-    await this.authenticationService.authenticate();
+    const authenticated = await this.authenticationService.authenticate();
+
+    if(!authenticated) {
+      this.router.navigate(['login']);
+    }
 
     this.httpService.getConversations().subscribe(value => this._conversations = value);
   }
@@ -40,7 +45,7 @@ export class MainTemplateComponent {
     return this._conversations;
   }
 
-  public showId(id : string) : void {
-    console.log(id);
+  public changeConversation(id : string) : void {
+    this.router.navigate([id], {relativeTo: this.route})
   }
 }
