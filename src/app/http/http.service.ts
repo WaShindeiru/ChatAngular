@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthenticationService} from "../authentication/authentication.service";
 import {Conversation} from "./Conversation";
 import {ChatMessage} from "./ChatMessage";
+import {ChatUserPassword} from "./ChatUserPassword";
 
 @Injectable({
   providedIn: 'root'
@@ -33,4 +34,15 @@ export class HttpService {
     return this.http.get<Array<ChatMessage>>(requestUrl, {headers});
   }
 
+  public registerNewUser(user: ChatUserPassword) : Promise<Response> {
+    const requestUrl = this.url + "/register";
+
+    return fetch(requestUrl, {
+      method: "POST",
+      headers: {
+        'Content-Type': "application/json"
+      },
+      body: JSON.stringify(user)
+    });
+  }
 }

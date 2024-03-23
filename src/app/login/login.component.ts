@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AuthenticationService} from "../authentication/authentication.service";
 import {Router} from "@angular/router";
 
@@ -19,12 +19,12 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.signupForm = new FormGroup({
-      'username': new FormControl(2),
-      'password': new FormControl()
+      'username': new FormControl(null, [Validators.required]),
+      'password': new FormControl(null, [Validators.required])
     })
   }
 
-  public async showUsername(): Promise<void> {
+  public async login(): Promise<void> {
     this.authentication.username = this.signupForm.get('username').value;
     this.authentication.password = this.signupForm.get('password').value;
 
@@ -33,5 +33,9 @@ export class LoginComponent implements OnInit {
     if(authenticated) {
       this.router.navigate(['conversation']);
     }
+  }
+
+  public goToRegistration() : void {
+    this.router.navigate(["registration"]);
   }
 }

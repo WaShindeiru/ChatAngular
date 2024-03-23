@@ -3,6 +3,7 @@ import {ConversationRouteComponent} from "./conversation-route/conversation-rout
 import {MainComponent} from "./main/main.component";
 import {LoginComponent} from "./login/login.component";
 import {MainTemplateComponent} from "./main-template/main-template.component";
+import {RegistrationComponent} from "./registration/registration.component";
 
 export const routes: Routes = [
   {
@@ -19,5 +20,13 @@ export const routes: Routes = [
   {
     path: "login",
     component: LoginComponent
+  },
+  {
+    path: "registration",
+    component: RegistrationComponent
+  },
+  {
+    path: "**",
+    redirectTo: "conversation"
   }
 ];
