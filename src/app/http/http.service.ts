@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthenticationService} from "../authentication/authentication.service";
 import {Conversation} from "./Conversation";
-import {ChatMessage} from "./ChatMessage";
+import {ChatMessage, ChatMessageWithoutId} from "./ChatMessage";
 import {ChatUserPassword} from "./ChatUserPassword";
 
 @Injectable({
@@ -44,5 +44,16 @@ export class HttpService {
       },
       body: JSON.stringify(user)
     });
+  }
+
+  public sendMessage(conversationId: number, message: ChatMessageWithoutId) {
+    const requestUrl = this.url + "/conversation/" + conversationId + "/message";
+    let headers = new HttpHeaders( {
+      Authorization: "Bearer " + this.authentication.token
+    });
+
+    console.log(message);
+
+    return this.http.post<ChatMessage>(requestUrl, message, {headers});
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthenticationResponse} from "./AuthenticationResponse";
+import {ChatUser} from "../http/ChatUser";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class AuthenticationService {
 
   public username: string = null;
   public password: string = null;
+  public user: ChatUser = null;
 
   constructor(private http: HttpClient) {}
 
@@ -35,6 +37,12 @@ export class AuthenticationService {
       }
 
       this._authenticated = true;
+
+      const url2 : string = "http://localhost:8080/user";
+      let headers = new HttpHeaders( {
+        Authorization: "Bearer " + this.token
+      });
+      this.http.get<ChatUser>(url2, {headers}).subscribe(value => this.user = value);
       return true;
     }
 
@@ -51,6 +59,20 @@ export class AuthenticationService {
     else {
       return this.authenticate_();
     }
+  }
+
+  public waitUntilAuthenticated() : Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const self = this;
+
+      (function waitForAuthentication() {
+        if(self.authenticated) {
+          return resolve(true);
+        } else {
+          setTimeout(waitForAuthentication, 100);
+        }
+      })();
+    })
   }
 
   public get authenticated() : boolean {

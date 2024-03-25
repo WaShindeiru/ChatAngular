@@ -5,13 +5,15 @@ import {MessageComponent} from "../message/message.component";
 import {NgForOf} from "@angular/common";
 import {AuthenticationService} from "../authentication/authentication.service";
 import {ActivatedRoute, Params} from "@angular/router";
+import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-conversation-route',
   standalone: true,
   imports: [
     MessageComponent,
-    NgForOf
+    NgForOf,
+    ReactiveFormsModule
   ],
   templateUrl: './conversation-route.component.html',
   styleUrl: './conversation-route.component.css'
@@ -20,6 +22,7 @@ export class ConversationRouteComponent implements OnInit {
 
   private _messages: Array<ChatMessage>;
   private _conversationId: string;
+  public messageForm: FormGroup;
 
   public constructor(private httpService: HttpService, private authenticationService: AuthenticationService,
                      private route: ActivatedRoute) {}
@@ -30,8 +33,11 @@ export class ConversationRouteComponent implements OnInit {
 
     this.route.params.subscribe((params: Params) => {
       this._conversationId = params['id'];
-      this.initialize();
     })
+
+    this.messageForm = new FormGroup({
+      'message': new FormControl()
+    });
   }
 
   public async initialize() {
@@ -51,5 +57,14 @@ export class ConversationRouteComponent implements OnInit {
 
   public get conversationId() {
     return this._conversationId;
+  }
+
+  public onMessageSend() : void {
+    const message = this.messageForm.get("message").value;
+    this.httpService.sendMessage(Number(this._conversationId), {
+      messageText: message,
+      sentDateTime: null,
+      sentBy: this.authenticationService.user
+    }).subscribe(value => );
   }
 }
