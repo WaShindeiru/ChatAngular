@@ -6,6 +6,9 @@ import {NgForOf} from "@angular/common";
 import {AuthenticationService} from "../authentication/authentication.service";
 import {ActivatedRoute, Params} from "@angular/router";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {WebsocketService} from "../websocket/websocket.service";
+import {WebSocketSubject} from "rxjs/internal/observable/dom/WebSocketSubject";
+import {webSocket} from "rxjs/webSocket";
 
 @Component({
   selector: 'app-conversation-route',
@@ -17,12 +20,15 @@ import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
   ],
   templateUrl: './conversation-route.component.html',
   styleUrl: './conversation-route.component.css'
+  // providers: [WebsocketService]
 })
 export class ConversationRouteComponent implements OnInit {
 
   private _messages: Array<ChatMessage>;
   private _conversationId: string;
   public messageForm: FormGroup;
+  public url: string = "localhost:8080";
+  private websocket: WebSocketSubject<ChatMessage>;
 
   public constructor(private httpService: HttpService, private authenticationService: AuthenticationService,
                      private route: ActivatedRoute) {}
@@ -51,6 +57,17 @@ export class ConversationRouteComponent implements OnInit {
     }
   }
 
+  public setSocket() {
+    this.websocket = webSocket<ChatMessage>("ws://" + this.url + "/ws/message" + "?access_token="
+      + this.authenticationService.token);
+
+    this.websocket.subscribe(value => {
+      if(value.sentBy !== this.authenticationService.user) {
+        this._messages.push(value)
+      }
+    });
+  }
+
   public get messages() {
     return this._messages;
   }
@@ -65,6 +82,8 @@ export class ConversationRouteComponent implements OnInit {
       messageText: message,
       sentDateTime: null,
       sentBy: this.authenticationService.user
-    }).subscribe(value => );
+    }).subscribe(value => this._messages.push(value));
+
+    this.messageForm.setValue({message: ""})
   }
 }
