@@ -19,6 +19,16 @@ export class HttpService {
       Authorization: "Bearer " + this.authentication.token
     });
 
+    let requestUrl = this.url + "/user/conversation";
+
+    return this.http.get<Array<Conversation>>(requestUrl, {headers});
+  }
+
+  public getAllConversations() {
+    let headers = new HttpHeaders({
+      Authorization: "Bearer " + this.authentication.token
+    });
+
     let requestUrl = this.url + "/conversation";
 
     return this.http.get<Array<Conversation>>(requestUrl, {headers});

@@ -12,8 +12,8 @@ export class AuthenticationService {
   private _authenticated: boolean = false;
   private _token: string = "";
 
-  public username: string = "Fvlte";
-  public password: string = "123";
+  public username: string = "";
+  public password: string = "";
   public user: ChatUser = null;
 
   constructor(private http: HttpClient) {}
