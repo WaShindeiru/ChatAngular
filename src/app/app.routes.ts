@@ -3,7 +3,6 @@ import {ConversationRouteComponent} from "./conversation-route/conversation-rout
 import {LoginComponent} from "./login/login.component";
 import {MainTemplateComponent} from "./main-template/main-template.component";
 import {RegistrationComponent} from "./registration/registration.component";
-import {TestahaComponent} from "./testaha/testaha.component";
 
 export const routes: Routes = [
   {
@@ -24,10 +23,6 @@ export const routes: Routes = [
   {
     path: "registration",
     component: RegistrationComponent
-  },
-  {
-    path: "aha",
-    component: TestahaComponent
   },
   {
     path: "**",
