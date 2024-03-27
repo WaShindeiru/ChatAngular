@@ -43,6 +43,7 @@ export class ConversationRouteComponent implements OnInit {
       this.chatMessageObservable = this.httpService.getMessages(this._conversationId);
       this.chatMessageObservable.subscribe(value => {
         this._messages = value;
+        this.sortMessages();
       });
     })
 
@@ -65,10 +66,23 @@ export class ConversationRouteComponent implements OnInit {
         + this.authenticationService.token);
 
       this.websocket.subscribe(value => {
-        if(value.sentBy.userId !== this.authenticationService.user.userId && ) {
+        if(value.sentBy.userId !== this.authenticationService.user.userId && value.conversation.id == this._conversationId) {
           this._messages.push(value)
+          this.sortMessages();
         }
       });
+    }
+  }
+
+  public sortMessages(): void {
+    this._messages.sort(this.dateComparator);
+  }
+
+  public dateComparator(message1: ChatMessage, message2: ChatMessage) {
+    if(Date.parse(message1.sentDateTime) < Date.parse(message2.sentDateTime)) {
+      return -1;
+    } else {
+      return 1;
     }
   }
 
@@ -84,7 +98,7 @@ export class ConversationRouteComponent implements OnInit {
     const message = this.messageForm.get("message").value;
     this.httpService.sendMessage(Number(this._conversationId), {
       messageText: message,
-      sentDateTime: null,
+      sentDateTime: Date.now().toString(),
       sentBy: this.authenticationService.user
     }).subscribe(value => this._messages.push(value));
 

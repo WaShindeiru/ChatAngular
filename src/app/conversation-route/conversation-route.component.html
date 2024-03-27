@@ -1,11 +1,13 @@
 <div class="chat-div">
 
-  <div class="message-div"
-       *ngFor = "let message of messages; let i = index;">
-    <app-message [message]="message"></app-message>
+  <div class="messages-container">
+    <div class="message-div"
+         *ngFor = "let message of messages; let i = index;">
+      <app-message [message]="message"></app-message>
+    </div>
   </div>
 
-  <div style="width: 100%;">
+  <div class="message-send-container">
     <form [formGroup]="messageForm" (ngSubmit)="onMessageSend()">
     <div class="flex-container ">
       <input

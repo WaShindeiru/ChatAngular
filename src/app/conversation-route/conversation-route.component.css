@@ -4,9 +4,10 @@
 }
 
 .message-div {
-  width: 100%;
-  padding: 5px;
+  /*width: 100%;*/
+  /*padding: 5px;*/
   margin: 5px 15px 5px 15px;
+  display: block;
 }
 
 .flex-container-center {
@@ -18,11 +19,19 @@
 .chat-div {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  /*justify-content: flex-end;*/
 
   width: 100%;
-  /*overflow-x: scroll;*/
+  overflow: auto;
   height: 100%;
+}
+
+.chat-div > :first-child {
+  margin-top: auto;
+}
+
+.messages-container {
+  overflow: auto;
 }
 
 .flex-container {
@@ -30,4 +39,13 @@
   flex-direction:  row;
   justify-content: center;
   margin: 15px;
+}
+
+.message-send-container {
+  width: 100%;
+  height: 70px;
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
