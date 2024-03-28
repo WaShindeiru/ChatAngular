@@ -1,6 +1,32 @@
-<div class="flex-container main">
+<div class="flex-container main"
+     (click)="showEvent($event)">
   <div class="left-pane padding">
     <div class="chat-windows-container">
+
+      <div class="search-div">
+        <div class="inner-search-div">
+<!--          (click)="showSearchInput($event)">-->
+          <input class="search-input"
+                 (focus)=showSearchInput($event)
+                 (click)=showSearchInput($event)
+                 (input)="updateSearch($event)"
+                 type="text"
+                 [formControl]="searchInput"
+                 >
+          <div
+            class="conversation-result-div"
+            *ngIf="searchInputFocus">
+
+                 <app-conversation-search
+                   *ngFor = "let conversation of conversationsRegular; let i = index;"
+                   [conversationId]="conversation.id"
+                   [conversationName]="conversation.conversationName"
+                   (idEmitter)="addUserToConversation($event)"
+                 ></app-conversation-search>
+
+          </div>
+        </div>
+      </div>
 
       <app-conversation
         *ngFor = "let conversation of conversations; let i = index;"
@@ -13,18 +39,6 @@
   </div>
 
   <div class="right-pane">
-<!--    <div class="flex-container-center chat-div">-->
-
-<!--      <div class="message-div"-->
-<!--           *ngFor = "let message of messages; let i = index;">-->
-<!--        <app-message [message]="message"></app-message>-->
-<!--      </div>-->
-
-<!--      <div class="flex-container ">-->
-<!--        <input type="text" class="message-input-div ">-->
-<!--        <button type="button" class="btn btn-primary">Send</button>-->
-<!--      </div>-->
-<!--    </div>-->
     <router-outlet></router-outlet>
   </div>
 </div>

@@ -1,6 +1,6 @@
-body {
-  height: 100%;
-}
+/*body {*/
+/*  height: 100%;*/
+/*}*/
 
 .main {
   background-color: lightblue;
@@ -11,12 +11,6 @@ body {
 .flex-container {
   display: flex;
   flex-direction:  row;
-}
-
-.flex-container-center {
-  display: flex;
-  flex-direction:  row;
-  justify-content: center;
 }
 
 .left-pane {
@@ -37,14 +31,33 @@ body {
   margin: 5px;
 }
 
-/*.messages {*/
-/*  display: flex;*/
-/*  align-items: end;*/
-/*  justify-content: center;*/
-/*  overflow: scroll;*/
-/*}*/
-
 .message-input {
   height: 40px;
   width: 100%;
+}
+
+.search-input {
+  width: 300px;
+  height: 40px;
+  display: block;
+}
+
+.search-div {
+  margin: 15px 0 30px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.conversation-result-div {
+  background-color: #d3d8da;
+  height: 280px;
+  width: 300px;
+  position: absolute;
+  overflow: auto;
+}
+
+.inner-search-div {
+  position: relative;
+  left: 0;
 }

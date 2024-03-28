@@ -4,6 +4,8 @@ import {AuthenticationService} from "../authentication/authentication.service";
 import {Conversation} from "./Conversation";
 import {ChatMessage, ChatMessageWithoutId} from "./ChatMessage";
 import {ChatUserPassword} from "./ChatUserPassword";
+import {ChatUser} from "./ChatUser";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +16,7 @@ export class HttpService {
 
   constructor(private http: HttpClient, private authentication: AuthenticationService) { }
 
-  public getConversations() {
+  public getConversations(): Observable<Array<Conversation>> {
     let headers = new HttpHeaders({
       Authorization: "Bearer " + this.authentication.token
     });
@@ -62,8 +64,15 @@ export class HttpService {
       Authorization: "Bearer " + this.authentication.token
     });
 
-    console.log(message);
-
     return this.http.post<ChatMessage>(requestUrl, message, {headers});
+  }
+
+  public addUserToConversation(user: ChatUser, conversationId: string): Observable<Array<Conversation>> {
+    const requestUrl = this.url + "/conversation/" + conversationId + "/user";
+    let headers = new HttpHeaders( {
+      Authorization: "Bearer " + this.authentication.token
+    });
+
+    return this.http.post<Array<Conversation>>(requestUrl, user, {headers});
   }
 }
