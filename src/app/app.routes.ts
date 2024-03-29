@@ -3,6 +3,7 @@ import {ConversationRouteComponent} from "./conversation-route/conversation-rout
 import {LoginComponent} from "./login/login.component";
 import {MainTemplateComponent} from "./main-template/main-template.component";
 import {RegistrationComponent} from "./registration/registration.component";
+import {CreateNewConversationComponent} from "./create-new-conversation/create-new-conversation.component";
 
 export const routes: Routes = [
   {
@@ -23,6 +24,10 @@ export const routes: Routes = [
   {
     path: "registration",
     component: RegistrationComponent
+  },
+  {
+    path: "create",
+    component: CreateNewConversationComponent
   },
   {
     path: "**",

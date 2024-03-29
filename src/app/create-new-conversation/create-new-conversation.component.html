@@ -1,0 +1,27 @@
+<div class="main-container">
+  <div class="flex-center-container">
+    <form [formGroup]="conversationForm" (ngSubmit)="createNewConversation()">
+      <div class="login-container">
+        <h3 class="form-title">Create new conversation</h3>
+
+        <label class="form-label" for="conversationName">Conversation Name</label>
+        <input
+          type="text"
+          class="form-input"
+          id="conversationName"
+          formControlName='conversationName'>
+
+        <div
+          class="error-div"
+          >
+          <span *ngIf="showMessage">{{message}}</span>
+<!--          <span *ngIf="this.registrationForm.hasError('nonMatchingPasswords') &&-->
+<!--        this.registrationForm.controls.passwordAgain.dirty">Passwords don't match<br></span>-->
+<!--          <span *ngIf="this.wrongUsernameError">User with username: {{this.username}} already exists</span>-->
+        </div>
+        <button type="submit" [disabled]="!conversationForm.valid" class="form-button btn btn-primary">Create new Conversation</button>
+        <button class="form-button btn btn-primary" (click)=goToMainView()>Go back</button>
+      </div>
+    </form>
+  </div>
+</div>

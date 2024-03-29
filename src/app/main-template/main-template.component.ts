@@ -9,6 +9,7 @@ import {MessageComponent} from "../message/message.component";
 import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
 import {ConversationSearchComponent} from "../conversation-search/conversation-search.component";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'app-main-template',
@@ -27,11 +28,17 @@ import {FormControl, ReactiveFormsModule} from "@angular/forms";
 })
 export class MainTemplateComponent implements OnInit {
 
-  private _conversations : Array<Conversation>;
-  public searchInputFocus: boolean = false;
+  private myConversations : Array<Conversation>;
+  public myConversationsSet: Set<string>;
   public conversationsAll: Array<Conversation>;
+  public conversationsNotPresentIn: Array<Conversation>;
+  public conversationsNotPresentInSet: Set<string>;
   public conversationsRegular: Array<Conversation>;
+  public conversationsRegularSet: Set<string>;
+
+  public searchInputFocus: boolean = false;
   private conversationNumber: number = 4;
+
   public searchInput: FormControl;
 
   constructor(private authenticationService: AuthenticationService, private httpService: HttpService,
@@ -49,15 +56,36 @@ export class MainTemplateComponent implements OnInit {
       this.router.navigate(['login']);
     }
 
-    this.httpService.getConversations().subscribe(value => this._conversations = value);
-    this.httpService.getAllConversations().subscribe(value => {
-      this.conversationsAll = value;
+    forkJoin(
+      {
+        "myConversations": this.httpService.getConversations(),
+        "allConversations": this.httpService.getAllConversations()
+      }
+    ).subscribe(value =>
+    {
+      this.myConversations = value["myConversations"];
+      this.myConversationsSet = new Set<string>();
+      this.conversationsAll = value["allConversations"];
+      this.conversationsNotPresentIn = new Array<Conversation>();
+      this.conversationsNotPresentInSet = new Set<string>();
+
+      this.myConversations.forEach(conversation => {
+        this.myConversationsSet.add(conversation.id);
+      });
+
+      this.conversationsAll.forEach(conversation => {
+        if(!this.myConversationsSet.has(conversation.id)) {
+          this.conversationsNotPresentIn.push(conversation);
+          this.conversationsNotPresentInSet.add(conversation.id);
+        }
+      });
+
       this.populateSearch();
     });
   }
 
   public get conversations() {
-    return this._conversations;
+    return this.myConversations;
   }
 
   public changeConversation(id : string) : void {
@@ -66,7 +94,7 @@ export class MainTemplateComponent implements OnInit {
 
   public addUserToConversation(id: string): void {
     this.httpService.addUserToConversation(this.authenticationService.user, id).subscribe(
-      value => this._conversations = value);
+      value => this.myConversations = value);
   }
 
   public showSearchInput(event: Event) : void {
@@ -76,17 +104,20 @@ export class MainTemplateComponent implements OnInit {
 
   private populateSearch() : void {
     this.conversationsRegular = new Array<Conversation>();
-    let randomIntSet = new Set<number>();
-    let randomInt = Math.floor(Math.random() * this.conversationsAll.length);
+    this.conversationsRegularSet = new Set<string>();
 
-    for(let i = 0; i < this.conversationNumber && i < this.conversationsAll.length; i++) {
+    let randomInt = Math.floor(Math.random() * this.conversationsNotPresentIn.length);
+    let tempConversation = this.conversationsNotPresentIn.at(randomInt);
 
-      while(randomIntSet.has(randomInt)) {
-        randomInt = Math.floor(Math.random() * this.conversationsAll.length);
+    for(let i = 0; i < this.conversationNumber && i < this.conversationsNotPresentIn.length; i++) {
+
+      while(this.conversationsRegularSet.has(tempConversation.id)) {
+        randomInt = Math.floor(Math.random() * this.conversationsNotPresentIn.length)
+        tempConversation = this.conversationsNotPresentIn.at(randomInt);
       }
 
-      randomIntSet.add(randomInt);
-      this.conversationsRegular.push(this.conversationsAll.at(randomInt));
+      this.conversationsRegular.push(tempConversation);
+      this.conversationsRegularSet.add(tempConversation.id);
     }
   }
 
@@ -100,7 +131,7 @@ export class MainTemplateComponent implements OnInit {
       this.conversationsRegular = new Array<Conversation>();
       const myRe = new RegExp(search);
 
-      for (const conversation of this.conversationsAll) {
+      for (const conversation of this.conversationsNotPresentIn) {
         const temp = myRe.exec(conversation.conversationName);
         if (temp !== null) {
           this.conversationsRegular.push(conversation);
@@ -111,5 +142,9 @@ export class MainTemplateComponent implements OnInit {
 
   public showEvent(event: Event) : void {
     this.searchInputFocus = false;
+  }
+
+  public goToConversationCreation() {
+    this.router.navigate(["create"]);
   }
 }

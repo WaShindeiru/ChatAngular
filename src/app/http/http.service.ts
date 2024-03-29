@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthenticationService} from "../authentication/authentication.service";
-import {Conversation} from "./Conversation";
+import {Conversation, ConversationWithoutId} from "./Conversation";
 import {ChatMessage, ChatMessageWithoutId} from "./ChatMessage";
 import {ChatUserPassword} from "./ChatUserPassword";
 import {ChatUser} from "./ChatUser";
@@ -55,6 +55,19 @@ export class HttpService {
         'Content-Type': "application/json"
       },
       body: JSON.stringify(user)
+    });
+  }
+
+  public createNewConversation(conversation: ConversationWithoutId): Promise<Response>{
+    const requestUrl = this.url + "/conversation";
+
+    return fetch(requestUrl, {
+      method: "POST",
+      headers: {
+        'Content-Type': "application/json",
+        'Authorization': "Bearer " + this.authentication.token
+      },
+      body: JSON.stringify(conversation)
     });
   }
 
