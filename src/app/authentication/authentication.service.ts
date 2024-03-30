@@ -86,4 +86,14 @@ export class AuthenticationService {
   public get userId() : string {
     return this._userId;
   }
+
+  public signOut(): void {
+    this._userId = null;
+    this._token = "";
+    this.user = null;
+
+    this._authenticated = false;
+    this.username = "";
+    this.password = "";
+  }
 }

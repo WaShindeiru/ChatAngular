@@ -2,18 +2,21 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AuthenticationService} from "../authentication/authentication.service";
 import {Router} from "@angular/router";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgIf
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit {
   public signupForm: FormGroup;
+  public showErrorMessage: boolean = false;
 
   constructor(private authentication: AuthenticationService, private router: Router) {}
 
@@ -31,7 +34,14 @@ export class LoginComponent implements OnInit {
     let authenticated = await this.authentication.authenticate();
 
     if(authenticated) {
+      this.showErrorMessage = false;
       this.router.navigate(['conversation']);
+    } else {
+      this.signupForm.setValue({
+        username: "",
+        password: ""
+      });
+      this.showErrorMessage = true;
     }
   }
 

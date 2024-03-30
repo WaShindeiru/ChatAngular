@@ -24,6 +24,7 @@ export class RegistrationComponent implements OnInit {
   public registrationForm: FormGroup;
   public wrongUsernameError: boolean = false;
   public username: string;
+  public showRegistrationMessage: boolean = false;
 
   constructor(private authentication: AuthenticationService, private router: Router, private http: HttpService) {}
 
@@ -49,8 +50,10 @@ export class RegistrationComponent implements OnInit {
 
     if(result.status === 400) {
       this.wrongUsernameError = true;
-    } else {
+      this.showRegistrationMessage = false;
+    } else if(result.status === 200) {
       this.wrongUsernameError = false;
+      this.showRegistrationMessage = true;
     }
   }
 

@@ -147,4 +147,9 @@ export class MainTemplateComponent implements OnInit {
   public goToConversationCreation() {
     this.router.navigate(["create"]);
   }
+
+  public onSignOut(): void {
+    this.authenticationService.signOut();
+    this.router.navigate(['login']);
+  }
 }

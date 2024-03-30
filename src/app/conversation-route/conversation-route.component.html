@@ -1,5 +1,9 @@
 <div class="chat-div">
 
+<!--  <div class="top-pane-div">-->
+<!--    <button>Sign out</button>-->
+<!--  </div>-->
+
   <div class="messages-container">
     <div class="message-div"
          *ngFor = "let message of messages; let i = index;">
@@ -9,15 +13,17 @@
 
   <div class="message-send-container">
     <form [formGroup]="messageForm" (ngSubmit)="onMessageSend()">
-    <div class="flex-container ">
-      <input
-        type="text"
-        class="message-input-div"
-        id="message"
-        formControlName = 'message'
-      >
-      <button type="submit" class="btn btn-primary">Send</button>
-    </div>
+      <div class="flex-container ">
+        <input
+          type="text"
+          class="message-input-div"
+          id="message"
+          formControlName = 'message'
+        >
+        <button type="submit" class="btn btn-primary">Send</button>
+      </div>
     </form>
   </div>
+
 </div>
+

@@ -25,6 +25,7 @@
           <span *ngIf="this.registrationForm.hasError('nonMatchingPasswords') &&
         this.registrationForm.controls.passwordAgain.dirty">Passwords don't match<br></span>
           <span *ngIf="this.wrongUsernameError">User with username: {{this.username}} already exists</span>
+          <span *ngIf="this.showRegistrationMessage"> Registggered successfully. You can now log in</span>
         </div>
         <button type="submit" [disabled]="!registrationForm.valid" class="form-button btn btn-primary">Register</button>
         <button class="form-button btn btn-primary" (click)="goToLogin()">Go to login</button>
