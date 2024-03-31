@@ -1,3 +1,8 @@
-<span class="author">{{ message.sentBy.username }}</span>
-<br>
-{{ message.messageText }}
+<div
+  class="message-div"
+  [ngClass]="this.messageType === 'my-message' ? 'my-message' : 'not-my-message'"
+>
+  <span class="author">{{ message.sentBy.username }}</span>
+  <br>
+  {{ message.messageText }}
+</div>

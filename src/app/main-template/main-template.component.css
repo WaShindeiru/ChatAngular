@@ -22,6 +22,8 @@
 .left-pane {
   flex: 2.6;
   background-color: #c0dade;
+  overflow-y: auto;
+  overflow-x: clip;
 }
 
 .right-pane {

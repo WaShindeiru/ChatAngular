@@ -8,11 +8,6 @@
   margin-right: 10px;
 }
 
-.message-div {
-  margin: 5px 15px 5px 15px;
-  display: block;
-}
-
 .flex-container-center {
   display: flex;
   flex-direction:  row;
@@ -51,4 +46,25 @@
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+.message-div {
+  margin: 5px 15px 5px 15px;
+  display: flex;
+  flex-direction: row;
+  overflow-anchor: none;
+}
+
+.my-message {
+  justify-content: end;
+  margin-right: 20px;
+}
+
+.not-my-message {
+  justify-content: start;
+}
+
+#anchor {
+  overflow-anchor: auto;
+  height: 1px;
 }

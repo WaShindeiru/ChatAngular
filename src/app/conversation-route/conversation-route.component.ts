@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ChatMessage} from "../http/ChatMessage";
 import {HttpService} from "../http/http.service";
 import {MessageComponent} from "../message/message.component";
-import {NgForOf} from "@angular/common";
+import {NgClass, NgForOf} from "@angular/common";
 import {AuthenticationService} from "../authentication/authentication.service";
 import {ActivatedRoute, Params} from "@angular/router";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
@@ -16,7 +16,8 @@ import {Observable} from "rxjs";
   imports: [
     MessageComponent,
     NgForOf,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgClass
   ],
   templateUrl: './conversation-route.component.html',
   styleUrl: './conversation-route.component.css'
@@ -31,7 +32,7 @@ export class ConversationRouteComponent implements OnInit {
   private websocket: WebSocketSubject<ChatMessage>;
   private chatMessageObservable: Observable<ChatMessage[]>;
 
-  public constructor(private httpService: HttpService, private authenticationService: AuthenticationService,
+  public constructor(private httpService: HttpService, public authenticationService: AuthenticationService,
                      private route: ActivatedRoute) {}
 
   ngOnInit(): void {
