@@ -1,9 +1,14 @@
 .conversation-div {
   height: 80px;
-  padding: 3px;
+  padding: 5px;
+  border-radius: 10px;
   background-color: #c0dade;
 }
 
 .conversation-div:hover {
+  background-color: #6fb0b5;
+}
+
+.conversation-div-current {
   background-color: #6fb0b5;
 }

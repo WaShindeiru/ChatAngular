@@ -1,24 +1,28 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthenticationService} from "../authentication/authentication.service";
 import {Conversation, ConversationWithoutId} from "./Conversation";
 import {ChatMessage, ChatMessageWithoutId} from "./ChatMessage";
-import {ChatUserPassword} from "./ChatUserPassword";
 import {ChatUser} from "./ChatUser";
-import {Observable} from "rxjs";
+import {Observable, Subscription} from "rxjs";
+import {User} from "../authentication/User";
 
 @Injectable({
   providedIn: 'root'
 })
-export class HttpService {
+export class HttpService  {
 
   private url: string = "http://localhost:8080";
+  private currentUserSubscription: Subscription;
+  private currentUser: User;
 
-  constructor(private http: HttpClient, private authentication: AuthenticationService) { }
+  constructor(private http: HttpClient, private authentication: AuthenticationService) {
+    this.currentUserSubscription = this.authentication.currentUser.subscribe(value => this.currentUser = value);
+  }
 
   public getConversations(): Observable<Array<Conversation>> {
     let headers = new HttpHeaders({
-      Authorization: "Bearer " + this.authentication.token
+      Authorization: "Bearer " + this.currentUser.token
     });
 
     let requestUrl = this.url + "/user/conversation";
@@ -28,7 +32,7 @@ export class HttpService {
 
   public getAllConversations() {
     let headers = new HttpHeaders({
-      Authorization: "Bearer " + this.authentication.token
+      Authorization: "Bearer " + this.currentUser.token
     });
 
     let requestUrl = this.url + "/conversation";
@@ -38,24 +42,12 @@ export class HttpService {
 
   public getMessages(conversationId: string) {
     let headers = new HttpHeaders( {
-      Authorization: "Bearer " + this.authentication.token
+      Authorization: "Bearer " + this.currentUser.token
     });
 
     let requestUrl = this.url + "/conversation/" + conversationId + "/message";
 
     return this.http.get<Array<ChatMessage>>(requestUrl, {headers});
-  }
-
-  public registerNewUser(user: ChatUserPassword) : Promise<Response> {
-    const requestUrl = this.url + "/register";
-
-    return fetch(requestUrl, {
-      method: "POST",
-      headers: {
-        'Content-Type': "application/json"
-      },
-      body: JSON.stringify(user)
-    });
   }
 
   public createNewConversation(conversation: ConversationWithoutId): Promise<Response>{
@@ -65,7 +57,7 @@ export class HttpService {
       method: "POST",
       headers: {
         'Content-Type': "application/json",
-        'Authorization': "Bearer " + this.authentication.token
+        'Authorization': "Bearer " + this.currentUser.token
       },
       body: JSON.stringify(conversation)
     });
@@ -74,18 +66,20 @@ export class HttpService {
   public sendMessage(conversationId: number, message: ChatMessageWithoutId) {
     const requestUrl = this.url + "/conversation/" + conversationId + "/message";
     let headers = new HttpHeaders( {
-      Authorization: "Bearer " + this.authentication.token
+      Authorization: "Bearer " + this.currentUser.token
     });
 
     return this.http.post<ChatMessage>(requestUrl, message, {headers});
   }
 
-  public addUserToConversation(user: ChatUser, conversationId: string): Observable<Array<Conversation>> {
+  public addUserToConversation(user: User, conversationId: string): Observable<Array<Conversation>> {
+    const requestUser: ChatUser = User.toChatUser(user);
+
     const requestUrl = this.url + "/conversation/" + conversationId + "/user";
     let headers = new HttpHeaders( {
-      Authorization: "Bearer " + this.authentication.token
+      Authorization: "Bearer " + this.currentUser.token
     });
 
-    return this.http.post<Array<Conversation>>(requestUrl, user, {headers});
+    return this.http.post<Array<Conversation>>(requestUrl, requestUser, {headers});
   }
 }

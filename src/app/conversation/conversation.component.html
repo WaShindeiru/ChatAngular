@@ -1,4 +1,7 @@
 <div class="conversation-div"
+     [ngClass]="{
+     'conversation-div-current': this.currentConversation === this.id
+     }"
      (click) = "this.whenClicked()">
   <h3>{{ conversationName }}</h3>
   {{ lastMessage }}

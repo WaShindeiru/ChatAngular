@@ -1,5 +1,11 @@
 export interface ChatUser {
-  userId: number,
+  id: string,
   username: string,
   status: string
+}
+
+export interface ChatUserPassword {
+  id?: string,
+  username: string,
+  password: string
 }

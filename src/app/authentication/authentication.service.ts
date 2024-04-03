@@ -1,99 +1,90 @@
-import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {AuthenticationResponse} from "./AuthenticationResponse";
-import {ChatUser} from "../http/ChatUser";
+import {Injectable} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+import {ChatUser, ChatUserPassword} from "../http/ChatUser";
+import {BehaviorSubject} from "rxjs";
+import {AuthenticationResponse, User} from "./User";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  private _userId: string = null;
-  private _authenticated: boolean = false;
-  private _token: string = "";
+  public currentUser = new BehaviorSubject<User>(null);
+  constructor(private router: Router) { }
 
-  public username: string = "";
-  public password: string = "";
-  public user: ChatUser = null;
-
-  constructor(private http: HttpClient) {}
-
-  private async authenticate_() : Promise<boolean> {
+  public async login(username: string, password: string) : Promise<ChatUser> {
     const url : string = "http://localhost:8080/login";
-    const tempHeaders = {
-      "Authorization": "Basic " + btoa(this.username + ":" + this.password)
-    }
 
-    let response = await fetch(url, {
+    let response = await fetch(url,  {
       method: "POST",
-      headers: tempHeaders
-    })
+      headers: {
+        'Content-Type': "application/json",
+        "Authorization": "Basic " + btoa(username + ":" + password)
+      }
+    });
+
 
     if(response.ok) {
-      this._token = "";
-      let stream = await response.body.getReader().read();
-      for (const i of stream.value) {
-        this._token += String.fromCharCode(i);
-      }
+      const authenticatedUser: AuthenticationResponse = await response.json();
+      this.authenticateUser(authenticatedUser.id, authenticatedUser.username, authenticatedUser.token);
 
-      this._authenticated = true;
-
-      const url2 : string = "http://localhost:8080/user";
-      let headers = new HttpHeaders( {
-        Authorization: "Bearer " + this.token
-      });
-      this.http.get<ChatUser>(url2, {headers}).subscribe(value => this.user = value);
-      return true;
+      return {
+        id: authenticatedUser.id,
+        username: authenticatedUser.username,
+        status: authenticatedUser.status
+      };
     }
 
     else {
-      return false;
+      return null;
     }
   }
 
-  public async authenticate() : Promise<boolean> {
-    if(this._authenticated) {
-      return true;
+  public async register(username: string, password: string) : Promise<ChatUser> {
+    const url : string = "http://localhost:8080/login";
+
+    const requestUser: ChatUserPassword = {
+      username: username,
+      password: password
     }
 
-    else {
-      return this.authenticate_();
+    let response = await fetch(url,  {
+      method: "POST",
+      headers: {
+        'Content-Type': "application/json",
+      },
+      body: JSON.stringify(requestUser)
+    });
+
+    if (response.ok) {
+      return this.login(username, password);
+    } else {
+      return null;
     }
   }
 
-  public waitUntilAuthenticated() : Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const self = this;
-
-      (function waitForAuthentication() {
-        if(self.authenticated) {
-          return resolve(true);
-        } else {
-          setTimeout(waitForAuthentication, 100);
-        }
-      })();
-    })
+  private authenticateUser(userId: string, email: string, token: string) {
+    const user = new User(userId, email, token);
+    this.currentUser.next(user);
+    localStorage.setItem("UserData", JSON.stringify(user));
   }
 
-  public get authenticated() : boolean {
-    return this._authenticated
+  public autoLogin() {
+    const userData : AuthenticationResponse = JSON.parse(localStorage.getItem("UserData"));
+    console.log(userData);
+    if (userData === null) {
+      return;
+    }
+
+
+    const loadedUser = new User(userData.id, userData.username, userData.token);
+    this.currentUser.next(loadedUser);
   }
 
-  public get token() : string {
-    return this._token;
-  }
-
-  public get userId() : string {
-    return this._userId;
-  }
-
-  public signOut(): void {
-    this._userId = null;
-    this._token = "";
-    this.user = null;
-
-    this._authenticated = false;
-    this.username = "";
-    this.password = "";
+  public logout() {
+    this.currentUser.next(null);
+    this.router.navigate(["/login"]);
+    localStorage.removeItem("UserData");
   }
 }

@@ -7,12 +7,12 @@
   <div class="messages-container">
     <div class="message-div"
          *ngFor = "let message of messages; let i = index;"
-         [ngClass]="this.authenticationService.user.userId === message.sentBy.userId ? 'my-message' : 'not-my-message'"
+         [ngClass]="this.currentUser.id === message.sentBy.id ? 'my-message' : 'not-my-message'"
         >
 
         <app-message
           [message]="message"
-          [messageType]="this.authenticationService.user.userId === message.sentBy.userId ? 'my-message' : 'not-my-message'">
+          [messageType]="this.currentUser.id === message.sentBy.id ? 'my-message' : 'not-my-message'">
         </app-message>
     </div>
     <div id="anchor"></div>

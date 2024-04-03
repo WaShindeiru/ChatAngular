@@ -6,7 +6,6 @@ import {passwordMatchValidator} from "./Validators";
 import {NgIf} from "@angular/common";
 import {HttpService} from "../http/http.service";
 import {ChatUser} from "../http/ChatUser";
-import {ChatUserPassword} from "../http/ChatUserPassword";
 
 @Component({
   selector: 'app-registration',
@@ -41,19 +40,19 @@ export class RegistrationComponent implements OnInit {
 
   public async registerUser() {
     this.username = this.registrationForm.get("username").value;
-    const user : ChatUserPassword = {
-      username: this.registrationForm.get("username").value,
-      password: this.registrationForm.get("password").value
-    }
+    const password: string = this.registrationForm.get("password").value;
 
-    const result = await this.http.registerNewUser(user);
+    let response: ChatUser = await this.authentication.register(this.username, password);
 
-    if(result.status === 400) {
+    if(response === null) {
       this.wrongUsernameError = true;
       this.showRegistrationMessage = false;
-    } else if(result.status === 200) {
+
+    } else  {
       this.wrongUsernameError = false;
       this.showRegistrationMessage = true;
+      this.router.navigate(["conversation"])
+
     }
   }
 

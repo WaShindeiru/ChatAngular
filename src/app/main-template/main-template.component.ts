@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthenticationService} from "../authentication/authentication.service";
 import {ConversationComponent} from "../conversation/conversation.component";
 import {HttpService} from "../http/http.service";
@@ -9,7 +9,8 @@ import {MessageComponent} from "../message/message.component";
 import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
 import {ConversationSearchComponent} from "../conversation-search/conversation-search.component";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
-import {forkJoin} from "rxjs";
+import {forkJoin, Subscription} from "rxjs";
+import {User} from "../authentication/User";
 
 @Component({
   selector: 'app-main-template',
@@ -26,7 +27,7 @@ import {forkJoin} from "rxjs";
   templateUrl: './main-template.component.html',
   styleUrl: './main-template.component.css'
 })
-export class MainTemplateComponent implements OnInit {
+export class MainTemplateComponent implements OnInit, OnDestroy {
 
   private myConversations : Array<Conversation>;
   public myConversationsSet: Set<string>;
@@ -35,6 +36,11 @@ export class MainTemplateComponent implements OnInit {
   public conversationsNotPresentInSet: Set<string>;
   public conversationsRegular: Array<Conversation>;
   public conversationsRegularSet: Set<string>;
+
+  public currentConversation: string = null;
+
+  private currentUserSubscription: Subscription;
+  public currentUser: User;
 
   public searchInputFocus: boolean = false;
   private conversationNumber: number = 4;
@@ -45,16 +51,9 @@ export class MainTemplateComponent implements OnInit {
               private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-      this.initialize();
-    }
+    this.currentUserSubscription = this.authenticationService.currentUser.subscribe(value => this.currentUser = value);
 
-  private async initialize() {
     this.searchInput = new FormControl<string>("");
-    const authenticated = await this.authenticationService.authenticate();
-
-    if(!authenticated) {
-      this.router.navigate(['login']);
-    }
 
     forkJoin(
       {
@@ -84,17 +83,28 @@ export class MainTemplateComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.currentUserSubscription.unsubscribe();
+  }
+
   public get conversations() {
     return this.myConversations;
   }
 
   public changeConversation(id : string) : void {
     this.router.navigate([id], {relativeTo: this.route})
+    this.currentConversation = id;
   }
 
   public addUserToConversation(id: string): void {
-    this.httpService.addUserToConversation(this.authenticationService.user, id).subscribe(
-      value => this.myConversations = value);
+    this.httpService.addUserToConversation(this.currentUser, id).subscribe(
+      value => {
+        this.myConversations = value;
+
+        this.conversationsNotPresentInSet.delete(id);
+        this.conversationsNotPresentIn = this.conversationsNotPresentIn.filter((conversation) => conversation.id != id);
+        this.populateSearch();
+      });
   }
 
   public showSearchInput(event: Event) : void {
@@ -149,7 +159,6 @@ export class MainTemplateComponent implements OnInit {
   }
 
   public onSignOut(): void {
-    this.authenticationService.signOut();
-    this.router.navigate(['login']);
+    this.authenticationService.logout();
   }
 }

@@ -4,6 +4,7 @@ import {LoginComponent} from "./login/login.component";
 import {MainTemplateComponent} from "./main-template/main-template.component";
 import {RegistrationComponent} from "./registration/registration.component";
 import {CreateNewConversationComponent} from "./create-new-conversation/create-new-conversation.component";
+import {unauthenticatedGuard} from "./authentication/AuthGuard";
 
 export const routes: Routes = [
   {
@@ -15,7 +16,8 @@ export const routes: Routes = [
           path: ":id",
           component: ConversationRouteComponent
         }
-      ]
+      ],
+    canActivate: [unauthenticatedGuard]
   },
   {
     path: "login",
@@ -27,7 +29,8 @@ export const routes: Routes = [
   },
   {
     path: "create",
-    component: CreateNewConversationComponent
+    component: CreateNewConversationComponent,
+    canActivate: [unauthenticatedGuard]
   },
   {
     path: "**",

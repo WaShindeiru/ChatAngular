@@ -8,7 +8,6 @@
       </div>
       <div class="search-div">
         <div class="inner-search-div">
-<!--          (click)="showSearchInput($event)">-->
           <input class="search-input"
                  (focus)=showSearchInput($event)
                  (click)=showSearchInput($event)
@@ -36,6 +35,7 @@
         *ngFor = "let conversation of conversations; let i = index;"
         [conversationName]="conversation.conversationName"
         [id] = "conversation.id"
+        [currentConversation]="currentConversation"
         (idEmitter) = "changeConversation($event)"
       ></app-conversation>
 
@@ -44,14 +44,17 @@
 
   <div class="right-pane">
     <div class="top-pane-div">
-      <button type=button
-              class="btn btn-primary create-new-chat-button"
-              (click)="goToConversationCreation()"
-      >
-        create new Conversation</button>
-      <button type="button"
-              class="btn btn-primary sign-out-button"
-              (click)="onSignOut()">Sign out</button>
+      <h2>Hello, {{this.currentUser.username}}</h2>
+      <div>
+        <button type=button
+                class="btn btn-primary create-new-chat-button"
+                (click)="goToConversationCreation()"
+        >
+          create new Conversation</button>
+        <button type="button"
+                class="btn btn-primary sign-out-button"
+                (click)="onSignOut()">Sign out</button>
+      </div>
     </div>
     <router-outlet></router-outlet>
   </div>

@@ -4,8 +4,6 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {AuthenticationService} from "../authentication/authentication.service";
 import {Router} from "@angular/router";
 import {HttpService} from "../http/http.service";
-import {passwordMatchValidator} from "../registration/Validators";
-import {ChatUserPassword} from "../http/ChatUserPassword";
 
 @Component({
   selector: 'app-create-new-conversation',

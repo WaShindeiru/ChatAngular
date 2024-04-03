@@ -1,4 +1,13 @@
 .conversation-div {
   height: 70px;
   padding: 3px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.conversation-div:hover {
+  background-color: #94c1d9;
 }
