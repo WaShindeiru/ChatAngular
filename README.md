@@ -1,27 +1,49 @@
-# ChattingFrontend
+# Chat Application Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.0.
+---
+Real-time chatting application. This repository contains only a graphical user interface. Webserver can be found here:
+https://github.com/WaShindeiru/Chat
 
-## Development server
+## Features
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+---
+* Real-time communication using websocket
+* Creating new users and conversations
+* Sending messages to users/conversations
 
-## Code scaffolding
+## Gallery
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
+<div>
+<img src="./docs/image.png" alt="Chat">
+</div>
 
-## Build
+## Tools I used:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+---
+* TypeScript
+* Angular
 
-## Running unit tests
+## Getting Started
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+---
+### Prerequisites
+* Make sure Node.js is installed
 
-## Running end-to-end tests
+### Build Instructions
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+---
+Make sure you are in a project directory, then run:
 
-## Further help
+```bash
+npm install
+npm start
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Next, go to:
+```
+http://localhost:4200
+```
+
+To work correctly, this application needs the webserver to be active. Details can be found here:
+https://github.com/WaShindeiru/ChatAngular
