@@ -49,4 +49,4 @@ All demo users have the following password:
 - 123
 
 To work correctly, this application needs the webserver to be active. Details can be found here:
-https://github.com/WaShindeiru/ChatAngular
+https://github.com/WaShindeiru/Chat
