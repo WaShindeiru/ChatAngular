@@ -11,6 +11,7 @@ import {ConversationSearchComponent} from "../conversation-search/conversation-s
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {forkJoin, Subscription} from "rxjs";
 import {User} from "../authentication/User";
+import {WebsocketService} from "../websocket/websocket.service";
 
 @Component({
   selector: 'app-main-template',
@@ -48,7 +49,7 @@ export class MainTemplateComponent implements OnInit, OnDestroy {
   public searchInput: FormControl;
 
   constructor(private authenticationService: AuthenticationService, private httpService: HttpService,
-              private router: Router, private route: ActivatedRoute) {}
+              private router: Router, private route: ActivatedRoute, private webSocket: WebsocketService) {}
 
   ngOnInit(): void {
     this.currentUserSubscription = this.authenticationService.currentUser.subscribe(value => this.currentUser = value);
@@ -79,6 +80,12 @@ export class MainTemplateComponent implements OnInit, OnDestroy {
         }
       });
 
+      this.populateSearch();
+    });
+
+    this.webSocket.getConversationNotification().subscribe(value => {
+      this.conversationsAll.push(value);
+      this.conversationsNotPresentIn.push(value);
       this.populateSearch();
     });
   }

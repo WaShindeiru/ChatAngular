@@ -10,6 +10,8 @@ import {WebSocketSubject} from "rxjs/internal/observable/dom/WebSocketSubject";
 import {webSocket} from "rxjs/webSocket";
 import {Observable, Subscription} from "rxjs";
 import {User} from "../authentication/User";
+import {WebSocketMessage} from "../websocket/WebSocketMessage";
+import {WebsocketService} from "../websocket/websocket.service";
 
 @Component({
   selector: 'app-conversation-route',
@@ -30,14 +32,14 @@ export class ConversationRouteComponent implements OnInit, OnDestroy {
   private _conversationId: string;
   public messageForm: FormGroup;
   private url: string = "localhost:8080";
-  private websocket: WebSocketSubject<ChatMessage>;
+  private subscription: Subscription;
   private chatMessageObservable: Observable<ChatMessage[]>;
 
   private currentUserSubscription: Subscription;
   public currentUser: User;
 
   public constructor(private httpService: HttpService, public authenticationService: AuthenticationService,
-                     private route: ActivatedRoute) {}
+                     private route: ActivatedRoute, private websocketService: WebsocketService) {}
 
   ngOnInit(): void {
     this.currentUserSubscription = this.authenticationService.currentUser.subscribe(
@@ -51,14 +53,9 @@ export class ConversationRouteComponent implements OnInit, OnDestroy {
       this.sortMessages();
     });
 
-    this.websocket = webSocket<ChatMessage>("ws://" + this.url + "/ws/message" + "?access_token="
-      + this.currentUser.token);
-
-    this.websocket.subscribe(value => {
-      if(value.sentBy.id !== this.currentUser.id && value.conversation.id == this._conversationId) {
-        this._messages.push(value)
-      }
-    });
+    this.subscription = this.websocketService.getMessagesForConversation(this._conversationId).subscribe(
+      value => this._messages.push(value)
+    );
 
     this.route.params.subscribe((params: Params) => {
       this._conversationId = params['id'];
@@ -67,6 +64,12 @@ export class ConversationRouteComponent implements OnInit, OnDestroy {
         this._messages = value;
         this.sortMessages();
       });
+
+      this.subscription.unsubscribe();
+
+      this.subscription = this.websocketService.getMessagesForConversation(this._conversationId).subscribe(
+        value => this._messages.push(value)
+      );
     })
 
     this.messageForm = new FormGroup({
@@ -102,7 +105,7 @@ export class ConversationRouteComponent implements OnInit, OnDestroy {
     const message = this.messageForm.get("message").value;
     this.httpService.sendMessage(Number(this._conversationId), {
       messageText: message,
-      sentDateTime: Date.now().toString(),
+      sentDateTime: new Date().toISOString(),
       sentBy: User.toChatUser(this.currentUser)
     }).subscribe(value => this._messages.push(value));
 

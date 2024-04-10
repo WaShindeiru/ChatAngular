@@ -1,7 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {MainTemplateComponent} from "./main-template/main-template.component";
-import {AuthService} from "./auth/auth.service";
 import {AuthenticationService} from "./authentication/authentication.service";
 
 @Component({

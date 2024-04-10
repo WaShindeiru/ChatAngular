@@ -10,7 +10,10 @@ import {Router} from "@angular/router";
 })
 export class AuthenticationService {
 
+  private tokenExpirationTimer: any;
   public currentUser = new BehaviorSubject<User>(null);
+  private expirationDuration: number = 5 * 60;
+
   constructor(private router: Router) { }
 
   public async login(username: string, password: string) : Promise<ChatUser> {
@@ -67,6 +70,7 @@ export class AuthenticationService {
   private authenticateUser(userId: string, email: string, token: string) {
     const user = new User(userId, email, token);
     this.currentUser.next(user);
+    this.autoLogout();
     localStorage.setItem("UserData", JSON.stringify(user));
   }
 
@@ -77,14 +81,24 @@ export class AuthenticationService {
       return;
     }
 
-
     const loadedUser = new User(userData.id, userData.username, userData.token);
     this.currentUser.next(loadedUser);
+  }
+
+  public autoLogout() {
+    this.tokenExpirationTimer = setTimeout(() => {
+      this.logout();
+    }, this.expirationDuration * 1000);
   }
 
   public logout() {
     this.currentUser.next(null);
     this.router.navigate(["/login"]);
     localStorage.removeItem("UserData");
+
+    if (this.tokenExpirationTimer) {
+      clearTimeout(this.tokenExpirationTimer);
+    }
+    this.tokenExpirationTimer = null;
   }
 }
