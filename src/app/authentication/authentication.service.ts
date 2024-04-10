@@ -45,7 +45,7 @@ export class AuthenticationService {
   }
 
   public async register(username: string, password: string) : Promise<ChatUser> {
-    const url : string = "http://localhost:8080/login";
+    const url : string = "http://localhost:8080/register";
 
     const requestUser: ChatUserPassword = {
       username: username,
